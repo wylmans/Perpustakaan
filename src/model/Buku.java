@@ -2,26 +2,28 @@ package model;
 
 public class Buku {
 
-    // Field sesuai skema tabel dari pseudocode Create
     private int    idBuku;
     private String judulBuku;
     private String penulisBuku;
     private String penerbitBuku;
     private String lokasiCoverBuku;
     private int    tahunTerbitBuku;
+    private String sinopsisBuku;      // Ditambahkan dari pseudocode update & cari_by_id
 
     // ── Constructor ───────────────────────────────────────────────────────────────
 
     public Buku() {}
 
     public Buku(int idBuku, String judulBuku, String penulisBuku,
-                String penerbitBuku, String lokasiCoverBuku, int tahunTerbitBuku) {
+                String penerbitBuku, String lokasiCoverBuku,
+                int tahunTerbitBuku, String sinopsisBuku) {
         this.idBuku          = idBuku;
         this.judulBuku       = judulBuku;
         this.penulisBuku     = penulisBuku;
         this.penerbitBuku    = penerbitBuku;
         this.lokasiCoverBuku = lokasiCoverBuku;
         this.tahunTerbitBuku = tahunTerbitBuku;
+        this.sinopsisBuku    = sinopsisBuku;
     }
 
     // ── Getter & Setter ───────────────────────────────────────────────────────────
@@ -32,6 +34,7 @@ public class Buku {
     public String getPenerbitBuku()      { return penerbitBuku; }
     public String getLokasiCoverBuku()   { return lokasiCoverBuku; }
     public int    getTahunTerbitBuku()   { return tahunTerbitBuku; }
+    public String getSinopsisBuku()      { return sinopsisBuku; }
 
     public void setIdBuku(int idBuku)                       { this.idBuku = idBuku; }
     public void setJudulBuku(String judulBuku)               { this.judulBuku = judulBuku; }
@@ -39,15 +42,17 @@ public class Buku {
     public void setPenerbitBuku(String penerbitBuku)         { this.penerbitBuku = penerbitBuku; }
     public void setLokasiCoverBuku(String lokasiCoverBuku)   { this.lokasiCoverBuku = lokasiCoverBuku; }
     public void setTahunTerbitBuku(int tahunTerbitBuku)      { this.tahunTerbitBuku = tahunTerbitBuku; }
+    public void setSinopsisBuku(String sinopsisBuku)         { this.sinopsisBuku = sinopsisBuku; }
 
     @Override
     public String toString() {
         return "Buku{" +
-               "id="       + idBuku          +
-               ", judul='" + judulBuku        + '\'' +
-               ", penulis='"+ penulisBuku     + '\'' +
-               ", penerbit='"+ penerbitBuku   + '\'' +
-               ", tahun="  + tahunTerbitBuku  +
+               "id="        + idBuku          +
+               ", judul='"  + judulBuku        + '\'' +
+               ", penulis='"+ penulisBuku      + '\'' +
+               ", penerbit='"+ penerbitBuku    + '\'' +
+               ", tahun="   + tahunTerbitBuku  +
+               ", sinopsis='"+ sinopsisBuku    + '\'' +
                '}';
     }
 }

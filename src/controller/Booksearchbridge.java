@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import java.sql.*;
 import java.util.*;
 
-public class Booksearchbridge {
+public class BookSearchBridge {
 
     // ── Baca Stop Word dari file ──────────────────────────────────────────────────
 
