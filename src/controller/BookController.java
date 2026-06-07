@@ -97,7 +97,7 @@ public class BookController {
                         // 1A. Hapus keyword di inverted index terlebih dahulu
                         //     (menghindari orphan data)
                         String queryHapusKeyword =
-                            "DELETE FROM nama_tabel_keyword WHERE value = ?";
+                            "DELETE FROM tabel_keyword WHERE value = ?";
                         try (PreparedStatement stmtKw = koneksi.prepareStatement(queryHapusKeyword)) {
                             stmtKw.setInt(1, idBukuDihapus);
                             stmtKw.executeUpdate();
@@ -127,7 +127,92 @@ public class BookController {
         }
     }
 
-    // ── UPDATE BUKU ───────────────────────────────────────────────────────────────
+    // ── UPDATE BUKU DARI FORM GUI ─────────────────────────────────────────────────
+
+    /**
+     * Versi update yang dipanggil langsung dari form GUI (HalamanCRUDAdmin).
+     * Parameter sudah bersih dari form, tidak perlu Scanner.
+     */
+    public static void updateBukuDariForm(int idBuku, String judul, String penulis,
+                                          String penerbit, String cover, String tahunStr,
+                                          String sinopsis, String ketersediaan,
+                                          String[] stopWord, Connection koneksi) {
+        int tahun = 0;
+        try { tahun = Integer.parseInt(tahunStr); } catch (NumberFormatException ignored) {}
+
+        if (judul.isEmpty()) judul = "Tidak diketahui";
+        if (penulis.isEmpty()) penulis = "Tidak diketahui";
+        if (penerbit.isEmpty()) penerbit = "Tidak diketahui";
+        if (cover.isEmpty()) cover = "default_cover.jpg";
+
+        String queryUpdate =
+            "UPDATE tabel_buku SET judul_buku=?, penulis_buku=?, penerbit_buku=?, " +
+            "lokasi_cover_buku=?, tahun_terbit_buku=?, sinopsis_buku=?, ketersediaan=? " +
+            "WHERE id_buku=?";
+
+        try (PreparedStatement stmt = koneksi.prepareStatement(queryUpdate)) {
+            stmt.setString(1, judul);
+            stmt.setString(2, penulis);
+            stmt.setString(3, penerbit);
+            stmt.setString(4, cover);
+            stmt.setInt(5, tahun);
+            stmt.setString(6, sinopsis);
+            stmt.setString(7, ketersediaan);
+            stmt.setInt(8, idBuku);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Gagal update buku: " + e.getMessage());
+            return;
+        }
+
+        // Hapus keyword lama lalu reindex
+        try (PreparedStatement stmtHapus = koneksi.prepareStatement(
+                "DELETE FROM tabel_keyword WHERE value=?")) {
+            stmtHapus.setInt(1, idBuku);
+            stmtHapus.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Gagal hapus keyword lama: " + e.getMessage());
+        }
+
+        reindexKeyword(idBuku, judul, stopWord, koneksi);
+        System.out.println("Buku berhasil diperbarui.");
+    }
+
+    // ── DELETE BUKU BERDASARKAN ID ────────────────────────────────────────────────
+
+    /**
+     * Hapus buku berdasarkan ID langsung (dipanggil dari GUI).
+     */
+    public static void deleteBukuById(int idBuku, Connection koneksi) {
+        try (PreparedStatement stmt = koneksi.prepareStatement(
+                "DELETE FROM tabel_buku WHERE id_buku=?")) {
+            stmt.setInt(1, idBuku);
+            stmt.executeUpdate();
+            System.out.println("Buku ID " + idBuku + " berhasil dihapus.");
+        } catch (SQLException e) {
+            System.err.println("Gagal hapus buku: " + e.getMessage());
+        }
+    }
+
+    // ── HELPER: REINDEX KEYWORD ───────────────────────────────────────────────────
+    private static void reindexKeyword(int idBuku, String judul, String[] stopWord, Connection koneksi) {
+        String[] kata = util.StringTokenizer.pecahStringBerdasarkanSpasi(judul);
+        String queryInsert = "INSERT INTO tabel_keyword (keyword, value) VALUES (?, ?)";
+
+        try (PreparedStatement stmt = koneksi.prepareStatement(queryInsert)) {
+            for (String k : kata) {
+                boolean isStop = false;
+                for (String sw : stopWord) if (k.equalsIgnoreCase(sw)) { isStop = true; break; }
+                if (!isStop) {
+                    stmt.setString(1, k.toLowerCase());
+                    stmt.setInt(2, idBuku);
+                    stmt.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Gagal reindex keyword: " + e.getMessage());
+        }
+    }
 
     /**
      * Memperbarui data buku dan me-reindex keyword inverted index-nya.
@@ -227,7 +312,7 @@ public class BookController {
                 }
 
                 // 4B. Bersihkan keyword lama (sangat krusial!)
-                String queryHapusKeyword = "DELETE FROM nama_tabel_keyword WHERE value = ?";
+                String queryHapusKeyword = "DELETE FROM tabel_keyword WHERE value = ?";
                 try (PreparedStatement stmtHapus = koneksi.prepareStatement(queryHapusKeyword)) {
                     stmtHapus.setInt(1, idBukuUpdate);
                     stmtHapus.executeUpdate();
@@ -258,7 +343,7 @@ public class BookController {
 
                 // Simpan keyword baru ke inverted index
                 String queryInsertKeyword =
-                    "INSERT INTO nama_tabel_keyword (keyword, value) VALUES (?, ?)";
+                    "INSERT INTO tabel_keyword (keyword, value) VALUES (?, ?)";
 
                 try (PreparedStatement stmtKw = koneksi.prepareStatement(queryInsertKeyword)) {
                     for (int i = 0; i < jumlahKataBersih; i++) {

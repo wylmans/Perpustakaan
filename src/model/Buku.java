@@ -8,7 +8,8 @@ public class Buku {
     private String penerbitBuku;
     private String lokasiCoverBuku;
     private int    tahunTerbitBuku;
-    private String sinopsisBuku;      // Ditambahkan dari pseudocode update & cari_by_id
+    private String sinopsisBuku;
+    private String ketersediaan;     // "Tersedia" | "Dipinjam" | "Stok Habis"
 
     // ── Constructor ───────────────────────────────────────────────────────────────
 
@@ -35,6 +36,7 @@ public class Buku {
     public String getLokasiCoverBuku()   { return lokasiCoverBuku; }
     public int    getTahunTerbitBuku()   { return tahunTerbitBuku; }
     public String getSinopsisBuku()      { return sinopsisBuku; }
+    public String getKetersediaan()      { return ketersediaan; }
 
     public void setIdBuku(int idBuku)                       { this.idBuku = idBuku; }
     public void setJudulBuku(String judulBuku)               { this.judulBuku = judulBuku; }
@@ -43,6 +45,7 @@ public class Buku {
     public void setLokasiCoverBuku(String lokasiCoverBuku)   { this.lokasiCoverBuku = lokasiCoverBuku; }
     public void setTahunTerbitBuku(int tahunTerbitBuku)      { this.tahunTerbitBuku = tahunTerbitBuku; }
     public void setSinopsisBuku(String sinopsisBuku)         { this.sinopsisBuku = sinopsisBuku; }
+    public void setKetersediaan(String ketersediaan)         { this.ketersediaan = ketersediaan; }
 
     @Override
     public String toString() {

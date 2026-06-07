@@ -9,9 +9,9 @@ public class DatabaseHelper {
 
     // ── Konfigurasi koneksi ───────────────────────────────────────────────────────
     // TODO: Sesuaikan URL, username, dan password dengan database-mu
-    private static final String DB_URL      = "jdbc:mysql://localhost:3306/nama_database";
+    private static final String DB_URL      = "jdbc:mysql://localhost:3306/perpustakaan_digital";
     private static final String DB_USER     = "root";
-    private static final String DB_PASSWORD = "";
+    private static final String DB_PASSWORD = "123456";
 
     /**
      * Membuat koneksi baru ke database.
