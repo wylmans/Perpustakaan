@@ -2,7 +2,6 @@ package ui;
 
 import engine.SearchEngine;
 import model.Admin;
-import ui.HalamanLogin;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,29 +20,29 @@ public class MainWindow extends JFrame {
     private JTextField inputPencarian;
     private JButton    tombolMencari;
 
-    private JPanel     navigasiPinggir;
-    private JButton    lihatNavigasi;
-    private JButton    navigasiInventaris;
-    private JButton    navigasiKontribusi;
+    private JPanel  navigasiPinggir;
+    private JButton lihatNavigasi;
+    private JButton navigasiInventaris;
+    private JButton navigasiKontribusi;
 
     // ── State sidebar ─────────────────────────────────────────────────────────────
     private boolean sidebarTerbuka = false;
 
     // ── Dependensi ────────────────────────────────────────────────────────────────
-    private final Connection  koneksi;
-    private final String[]    stopWord;
-    private final Admin       dataPetugas;
+    private final Connection koneksi;
+    private final String[]   stopWord;
+    private final Admin      dataPetugas;
 
     // ── Constructor ───────────────────────────────────────────────────────────────
     public MainWindow(Connection koneksi, String[] stopWord, Admin dataPetugas) {
-        this.koneksi      = koneksi;
-        this.stopWord     = stopWord;
-        this.dataPetugas  = dataPetugas;
+        this.koneksi     = koneksi;
+        this.stopWord    = stopWord;
+        this.dataPetugas = dataPetugas;
 
         setTitle("Perpustakaan Digital");
         setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(null); // Absolute layout sesuai pseudocode
+        setLayout(null);
 
         inisialisasiKomponen();
         aturPosisiAwal();
@@ -54,31 +53,30 @@ public class MainWindow extends JFrame {
 
     // ── Inisialisasi semua komponen ───────────────────────────────────────────────
     private void inisialisasiKomponen() {
-
-        // Label judul utama
         labelJudul = new JLabel("PERPUSTAKAAN DIGITAL", SwingConstants.CENTER);
         labelJudul.setFont(new Font("Arial", Font.BOLD, 48));
 
-        // Input pencarian
         inputPencarian = new JTextField();
         inputPencarian.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        // Tombol cari
         tombolMencari = new JButton("Mencari");
         tombolMencari.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        // Sidebar panel
         navigasiPinggir = new JPanel();
         navigasiPinggir.setBackground(new Color(45, 45, 45));
         navigasiPinggir.setLayout(null);
 
-        // Tombol hamburger
-        lihatNavigasi = new JButton("☰");
-        lihatNavigasi.setFont(new Font("Arial", Font.PLAIN, 20));
+        // Load icon hamburger dari resources/icons/menu.png
+        ImageIcon iconMenu = new ImageIcon("resources/icons/menu.png");
+        Image iconMenuScaled = iconMenu.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        lihatNavigasi = new JButton(new ImageIcon(iconMenuScaled));
+        lihatNavigasi.setToolTipText("Buka/Tutup Menu");
+        lihatNavigasi.setBorderPainted(false);
+        lihatNavigasi.setContentAreaFilled(false);
+        lihatNavigasi.setFocusPainted(false);
 
-        // Tombol navigasi menu
         navigasiInventaris = new JButton("Inventaris");
-        navigasiInventaris.setVisible(false); // Sembunyikan saat sidebar mengecil
+        navigasiInventaris.setVisible(false);
 
         navigasiKontribusi = new JButton("Kontribusi");
         navigasiKontribusi.setVisible(false);
@@ -86,20 +84,16 @@ public class MainWindow extends JFrame {
 
     // ── Atur posisi awal komponen (sidebar tertutup) ──────────────────────────────
     private void aturPosisiAwal() {
-
-        // Label judul
         labelJudul.setBounds(340, 200, 500, 60);
         add(labelJudul);
 
-        // Input pencarian
         inputPencarian.setBounds(290, 300, 500, 40);
         add(inputPencarian);
 
-        // Tombol cari
         tombolMencari.setBounds(800, 300, 100, 40);
         add(tombolMencari);
 
-        // Tombol hamburger & navigasi (ditambahkan sebelum panel agar tidak tertutup)
+        // Tombol navigasi ditambah SEBELUM panel sidebar agar tidak tertutup
         lihatNavigasi.setBounds(10, 10, 50, 50);
         add(lihatNavigasi);
 
@@ -109,12 +103,12 @@ public class MainWindow extends JFrame {
         navigasiKontribusi.setBounds(10, 160, 150, 40);
         add(navigasiKontribusi);
 
-        // Sidebar panel (ditambahkan terakhir agar berada di belakang tombol)
+        // Panel sidebar ditambah TERAKHIR agar berada di belakang tombol-tombol
         navigasiPinggir.setBounds(0, 0, 70, HEIGHT);
         add(navigasiPinggir);
     }
 
-    // ── Daftarkan semua event listener ───────────────────────────────────────────
+    // ── Daftarkan semua event listener ────────────────────────────────────────────
     private void daftarkanEventListener() {
 
         // 1. Tombol Mencari
@@ -122,15 +116,13 @@ public class MainWindow extends JFrame {
             String kataKunci = inputPencarian.getText().trim();
 
             if (!kataKunci.isEmpty()) {
-                // Jalankan pencarian, hasilnya Set<Integer> berisi ID buku
                 Set<Integer> hasilIdBuku = SearchEngine.cariMultiKata(
                         new String[]{kataKunci}, stopWord, koneksi);
 
-                // Sembunyikan halaman utama
                 setVisible(false);
 
-                // Buka halaman hasil pencarian
-                new HalamanHasilPencarian(hasilIdBuku, koneksi, this);
+                // ✅ Sudah selaras dengan constructor HalamanHasilPencarian
+                new HalamanHasilPencarian(hasilIdBuku, koneksi, stopWord, this);
             } else {
                 JOptionPane.showMessageDialog(this,
                         "Masukkan kata pencarian terlebih dahulu.",
@@ -138,40 +130,36 @@ public class MainWindow extends JFrame {
             }
         });
 
+        // Tekan Enter di field pencarian juga memicu pencarian
+        inputPencarian.addActionListener(e -> tombolMencari.doClick());
+
         // 2. Toggle Sidebar
         lihatNavigasi.addActionListener(e -> {
             if (!sidebarTerbuka) {
-                // Buka sidebar
                 navigasiPinggir.setBounds(0, 0, 200, HEIGHT);
                 navigasiInventaris.setVisible(true);
                 navigasiKontribusi.setVisible(true);
-
-                // Geser komponen utama ke kanan
                 labelJudul.setBounds(400, 200, 500, 60);
                 inputPencarian.setBounds(350, 300, 500, 40);
                 tombolMencari.setBounds(860, 300, 100, 40);
-
                 sidebarTerbuka = true;
             } else {
-                // Tutup sidebar
                 navigasiPinggir.setBounds(0, 0, 70, HEIGHT);
                 navigasiInventaris.setVisible(false);
                 navigasiKontribusi.setVisible(false);
-
-                // Kembalikan komponen utama ke posisi semula
                 labelJudul.setBounds(340, 200, 500, 60);
                 inputPencarian.setBounds(290, 300, 500, 40);
                 tombolMencari.setBounds(800, 300, 100, 40);
-
                 sidebarTerbuka = false;
             }
             revalidate();
             repaint();
         });
 
-        // 3. Navigasi Inventaris — buka HalamanLogin dulu sebelum CRUD
+        // 3. Navigasi Inventaris — wajib login dulu sebelum masuk CRUD
         navigasiInventaris.addActionListener(e -> {
             setVisible(false);
+            // ✅ Lewat HalamanLogin, bukan langsung ke HalamanCRUDAdmin
             new HalamanLogin(dataPetugas, koneksi, stopWord, this);
         });
 

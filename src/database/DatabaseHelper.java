@@ -36,7 +36,7 @@ public class DatabaseHelper {
         HashMap<String, Set<Integer>> mapKeyword = new HashMap<>();
 
         // Cukup 1 query untuk mengambil semua data inverted index
-        String query = "SELECT keyword, value FROM nama_tabel_keyword";
+        String query = "SELECT keyword, value FROM tabel_keyword";
 
         try (Statement stmt = koneksi.createStatement();
              ResultSet hasilDatabase = stmt.executeQuery(query)) {
