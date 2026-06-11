@@ -108,7 +108,7 @@ public class HalamanLogin extends JFrame {
             // Tutup form login lalu buka halaman CRUD Admin
             Timer timer = new Timer(800, ev -> {
                 dispose();
-                // TODO: new HalamanCRUDAdmin(koneksi, stopWord);
+                new HalamanInventaris(koneksi, halamanSebelumnya, stopWord);
             });
             timer.setRepeats(false);
             timer.start();
