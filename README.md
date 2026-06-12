@@ -1,10 +1,10 @@
-# 📚 Aplikasi Perpustakaan Digital
+# Aplikasi Perpustakaan Digital
 
 Aplikasi perpustakaan digital yang memanfaatkan algoritma **Inverted Index** untuk mempercepat proses pencarian buku. Teknologi ini umum digunakan pada mesin pencari (*search engine*) sehingga pencarian dapat dilakukan secara sangat efisien meskipun jumlah data buku terus bertambah.
 
 ---
 
-## 📖 Deskripsi
+## Deskripsi
 
 Aplikasi ini dirancang untuk membantu pengguna mencari buku dengan cepat melalui kata kunci tertentu. Sistem pencarian menggunakan struktur data **Inverted Index**, yang memungkinkan pencarian dilakukan tanpa harus memeriksa seluruh data buku satu per satu.
 
@@ -12,7 +12,7 @@ Aplikasi ini dirancang untuk membantu pengguna mencari buku dengan cepat melalui
 
 * 🔍 Pencarian buku menggunakan algoritma Inverted Index
 * 📖 Manajemen data buku
-👤 Manajemen data peminjam
+* 👤 Manajemen data peminjam
 * 🖼️ Dukungan cover buku
 * 🔐 Login administrator
 * 💾 Penyimpanan data menggunakan database relasional
@@ -20,7 +20,7 @@ Aplikasi ini dirancang untuk membantu pengguna mencari buku dengan cepat melalui
 
 ---
 
-## 📦 Dependensi
+## Dependensi
 
 Sebelum menjalankan aplikasi, pastikan beberapa komponen berikut tersedia:
 
@@ -29,7 +29,7 @@ Sebelum menjalankan aplikasi, pastikan beberapa komponen berikut tersedia:
 | `stopword.txt`           | Daftar kata yang diabaikan saat proses indexing |
 | `Admin.txt`              | File konfigurasi akun administrator             |
 | Database Driver (`.jar`) | Driver JDBC untuk database yang digunakan       |
-| `cover-image/`           | Folder penyimpanan gambar sampul buku           |
+| `cover/`           | Folder penyimpanan gambar sampul buku           |
 | Database                 | Berisi tabel buku, keyword, dan peminjam        |
 | OpenJDK                  | Runtime Java untuk menjalankan aplikasi         |
 
